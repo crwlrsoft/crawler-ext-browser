@@ -1,45 +1,103 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Test Case
-|--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "uses()" function to bind a different classes or traits.
-|
-*/
+use Crwlr\Crawler\Loader\Http\Politeness\TimingUnits\MultipleOf;
+use Crwlr\Crawler\Loader\LoaderInterface;
+use Crwlr\Crawler\UserAgents\UserAgent;
+use Crwlr\Crawler\UserAgents\UserAgentInterface;
+use Crwlr\CrawlerExtBrowser\Crawlers\HeadlessBrowserCrawler;
+use Crwlr\CrawlerExtBrowser\Loaders\HeadlessBrowserLoader;
+use Crwlr\Utils\Microseconds;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 
-// uses(Tests\TestCase::class)->in('Feature');
+class TestServerProcess
+{
+    public static ?Process $process = null;
+}
 
-/*
-|--------------------------------------------------------------------------
-| Expectations
-|--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
-*/
+uses()
+    ->group('integration')
+    ->beforeEach(function () {
+        if (!isset(TestServerProcess::$process)) {
+            TestServerProcess::$process = Process::fromShellCommandline(
+                'php -S localhost:8000 ' . __DIR__ . '/_Integration/Server.php'
+            );
 
-//expect()->extend('toBeOne', function () {
-//    return $this->toBe(1);
-//});
+            TestServerProcess::$process->start();
 
-/*
-|--------------------------------------------------------------------------
-| Functions
-|--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
-*/
+            usleep(100000);
+        }
+    })
+    ->afterAll(function () {
+        TestServerProcess::$process?->stop(3, SIGINT);
 
-//function something()
-//{
-//    // ..
-//}
+        TestServerProcess::$process = null;
+    })
+    ->in('_Integration');
+
+function helper_getFastLoader(UserAgentInterface $userAgent, ?LoggerInterface $logger = null): HeadlessBrowserLoader
+{
+    $loader = new HeadlessBrowserLoader($userAgent, logger: $logger);
+
+    $loader->throttle()
+        ->waitBetween(new MultipleOf(0.0001), new MultipleOf(0.0002))
+        ->waitAtLeast(Microseconds::fromSeconds(0.0001));
+
+    return $loader;
+}
+
+function helper_getFastCrawler(): HeadlessBrowserCrawler
+{
+    return new class () extends HeadlessBrowserCrawler {
+        protected function userAgent(): UserAgentInterface
+        {
+            return new UserAgent(
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ' .
+                'Chrome/120.0.0.0 Safari/537.36'
+            );
+        }
+
+        protected function loader(UserAgentInterface $userAgent, LoggerInterface $logger): LoaderInterface|array
+        {
+            return helper_getFastLoader($userAgent, $logger);
+        }
+    };
+}
+
+function helper_testFilePath(string $inPath = ''): string
+{
+    $basePath = __DIR__ . '/_files';
+
+    if (!empty($inPath)) {
+        return $basePath . (!str_starts_with($inPath, '/') ? '/' : '') . $inPath;
+    }
+
+    return $basePath;
+}
+
+function helper_cleanFiles(): void
+{
+    $scanDir = scandir(helper_testFilePath());
+
+    if (is_array($scanDir)) {
+        foreach ($scanDir as $file) {
+            if ($file === '.' || $file === '..' || $file === '.gitkeep') {
+                continue;
+            }
+
+            unlink(helper_testFilePath() . '/' . $file);
+        }
+    }
+}
+
+function helper_dump(mixed $var): void
+{
+    error_log(var_export($var, true));
+}
+
+function helper_dieDump(mixed $var): void
+{
+    error_log(var_export($var, true));
+
+    exit;
+}

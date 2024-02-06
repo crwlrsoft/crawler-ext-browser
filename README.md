@@ -1,10 +1,13 @@
 <p align="center"><a href="https://www.crwlr.software" target="_blank"><img src="https://github.com/crwlrsoft/graphics/blob/eee6cf48ee491b538d11b9acd7ee71fbcdbe3a09/crwlr-logo.png" alt="crwlr.software logo" width="260"></a></p>
 
-# Crwlr Package Template
+# Headless Browser Extension Package for the crwlr/crawler package
 
-This is the starting point for new crwlr packages. After checkout, you should at least customize the following things:
+The crwlr/crawler package itself already allows loading pages using a headless browser ([see documentation](https://www.crwlr.software/packages/crawler/v1.5/the-crawler/loaders#using-a-headless-browser)). However, it doesn't handle more complex browser actions such as clicking elements on loaded pages or taking screenshots. This extension is here to fulfill those needs.
 
-- `composer.json`: name, description, keywords, homepage, authors, support (issues, source, docs), autoload path.
-- Adapt URLs to file issues in `CONTRIBUTING.md`.
-- Remove `ExampleClass` and `ExampleTest` from `src` and `test` and start adding your actual code instead.
-- Rewrite the content of this file.
+## Documentation
+
+Documentation will follow soon.
+
+## Contributing
+
+If you consider contributing something to this package, read the [contribution guide (CONTRIBUTING.md)](CONTRIBUTING.md).
