@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2024-02-06
+### Fixed
+- Set required `crwlr/crawler` version to `^1.5`.
+
 ## [0.1.0] - 2024-02-06
 ### Added
 - Initial version containing a `HeadlessBrowserLoader`, a `HeadlessBrowserCrawler` (like `HttpCrawler`) and two steps: `Screenshot` and `GetColors`.
