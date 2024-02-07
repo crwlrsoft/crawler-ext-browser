@@ -33,7 +33,7 @@
     },
     "require": {
         "php": "^8.1",
-        "crwlr/crawler": "^1.5"
+        "crwlr/crawler": "^1.5.3"
     },
     "require-dev": {
         "pestphp/pest": "^2.19",

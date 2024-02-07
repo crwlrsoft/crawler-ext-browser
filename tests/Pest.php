@@ -1,5 +1,7 @@
 <?php
 
+use Crwlr\Crawler\HttpCrawler;
+use Crwlr\Crawler\Loader\Http\HttpLoader;
 use Crwlr\Crawler\Loader\Http\Politeness\TimingUnits\MultipleOf;
 use Crwlr\Crawler\Loader\LoaderInterface;
 use Crwlr\Crawler\UserAgents\UserAgent;
@@ -35,9 +37,9 @@ uses()
     })
     ->in('_Integration');
 
-function helper_getFastLoader(UserAgentInterface $userAgent, ?LoggerInterface $logger = null): HeadlessBrowserLoader
+function helper_getFastLoader(UserAgentInterface $userAgent, ?LoggerInterface $logger = null): HttpLoader
 {
-    $loader = new HeadlessBrowserLoader($userAgent, logger: $logger);
+    $loader = new HttpLoader($userAgent, logger: $logger);
 
     $loader->throttle()
         ->waitBetween(new MultipleOf(0.0001), new MultipleOf(0.0002))
@@ -46,9 +48,9 @@ function helper_getFastLoader(UserAgentInterface $userAgent, ?LoggerInterface $l
     return $loader;
 }
 
-function helper_getFastCrawler(): HeadlessBrowserCrawler
+function helper_getFastCrawler(): HttpCrawler
 {
-    return new class () extends HeadlessBrowserCrawler {
+    return new class () extends HttpCrawler {
         protected function userAgent(): UserAgentInterface
         {
             return new UserAgent(

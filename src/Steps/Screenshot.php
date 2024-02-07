@@ -40,6 +40,8 @@ class Screenshot extends BrowserBaseStep
      */
     protected function invoke(mixed $input): Generator
     {
+        $this->_switchLoaderBefore();
+
         $input = !is_array($input) ? [$input] : $input;
 
         foreach ($input as $uri) {
@@ -58,11 +60,13 @@ class Screenshot extends BrowserBaseStep
         }
 
         $this->resetInputRequestParams();
+
+        $this->_switchLoaderAfterwards();
     }
 
     protected function makeScreenshot(RespondedRequest $response): ?string
     {
-        $page = $this->loader->browserHelper->getOpenPage();
+        $page = $this->loader->browserHelper()->getOpenPage();
 
         if ($page) {
             try {
