@@ -3,6 +3,7 @@
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Steps\Step;
+use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
 use Crwlr\CrawlerExtBrowser\Utils\ImageColors;
 use Exception;
 use Generator;
@@ -31,6 +32,8 @@ class GetColors extends Step
     {
         if (is_array($input) && array_key_exists('screenshotPath', $input)) {
             $input = $input['screenshotPath'];
+        } elseif ($input instanceof RespondedRequestWithScreenshot) {
+            $input = $input->screenshotPath;
         }
 
         return $this->validateAndSanitizeStringOrStringable($input);

@@ -3,12 +3,14 @@
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Loader\Http\Messages\RespondedRequest;
+use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
 use Exception;
 use Generator;
 use HeadlessChromium\Exception\CommunicationException;
 use HeadlessChromium\Exception\FilesystemException;
 use HeadlessChromium\Exception\ScreenshotFailed;
 use Psr\Http\Message\UriInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Throwable;
 
 class Screenshot extends BrowserBaseStep
@@ -35,8 +37,8 @@ class Screenshot extends BrowserBaseStep
 
     /**
      * @param UriInterface|UriInterface[] $input
-     * @return Generator<array{ response: RespondedRequest, screenshotPath: string }>
-     * @throws Exception
+     * @return Generator<RespondedRequestWithScreenshot>
+     * @throws Exception|InvalidArgumentException
      */
     protected function invoke(mixed $input): Generator
     {
@@ -48,14 +50,19 @@ class Screenshot extends BrowserBaseStep
             $response = $this->getResponseFromInputUri($uri);
 
             if ($response) {
-                $screenshotPath = $this->makeScreenshot($response);
+                if (!$response instanceof RespondedRequestWithScreenshot) {
+                    $screenshotPath = $this->makeScreenshot($response);
 
-                if (is_string($screenshotPath)) {
-                    yield [
-                        'response' => $response,
-                        'screenshotPath' => $screenshotPath,
-                    ];
+                    if (is_string($screenshotPath)) {
+                        $response = RespondedRequestWithScreenshot::fromRespondedRequest($response, $screenshotPath);
+
+                        $this->loader->addToCache($response);
+                    } else {
+                        return;
+                    }
                 }
+
+                yield $response;
             }
         }
 
