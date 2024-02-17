@@ -106,7 +106,7 @@ function helper_cleanFiles(): void
 
     if (is_array($scanDir)) {
         foreach ($scanDir as $file) {
-            if ($file === '.' || $file === '..' || $file === '.gitkeep') {
+            if ($file === '.' || $file === '..' || $file === 'demo-screenshot.png') {
                 continue;
             }
 
