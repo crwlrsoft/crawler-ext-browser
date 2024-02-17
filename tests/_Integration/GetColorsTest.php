@@ -7,12 +7,43 @@ afterEach(function () {
     helper_cleanFiles();
 });
 
-it('gets the colors from a screenshot image', function () {
+it('gets the colors from a screenshot from a screenshot step execute before it in a crawler', function () {
     $crawler = helper_getFastCrawler();
 
     $crawler
         ->input('http://localhost:8000/screenshot')
         ->addStep(Screenshot::loadAndTake(helper_testFilePath()))
+        ->addStep(GetColors::fromImage());
+
+    $results = iterator_to_array($crawler->run());
+
+    expect($results)->toHaveCount(1);
+
+    $result = $results[0]->toArray();
+
+    expect($result['colors'][0])
+        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][0]['percentage'])
+        ->toBeGreaterThanOrEqual(80.3)
+        ->and($result['colors'][1])
+        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][1]['percentage'])
+        ->toBeGreaterThanOrEqual(15.3)
+        ->and($result['colors'][2])
+        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][2]['percentage'])
+        ->toBeGreaterThanOrEqual(3.1)
+        ->and($result['colors'][2])
+        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][2]['percentage'])
+        ->toBeGreaterThanOrEqual(3.1);
+});
+
+it('gets the colors from an image', function () {
+    $crawler = helper_getFastCrawler();
+
+    $crawler
+        ->input(['screenshotPath' => helper_testFilePath('demo-screenshot.png')])
         ->addStep(GetColors::fromImage());
 
     $results = iterator_to_array($crawler->run());
