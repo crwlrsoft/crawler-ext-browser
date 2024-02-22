@@ -10,9 +10,18 @@ use Generator;
 
 class GetColors extends Step
 {
+    protected ?float $onlyAbovePercentageOfImage = null;
+
     public static function fromImage(): self
     {
         return new self();
+    }
+
+    public function onlyAbovePercentageOfImage(float $percentage): self
+    {
+        $this->onlyAbovePercentageOfImage = $percentage;
+
+        return $this;
     }
 
     /**
@@ -22,7 +31,7 @@ class GetColors extends Step
     protected function invoke(mixed $input): Generator
     {
         try {
-            yield ['colors' => ImageColors::getFrom($input)];
+            yield ['colors' => ImageColors::getFrom($input, $this->onlyAbovePercentageOfImage)];
         } catch (Exception $exception) {
             $this->logger?->error('Failed to get colors from image: ' . $exception->getMessage());
         }

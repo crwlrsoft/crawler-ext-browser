@@ -12,15 +12,18 @@ class ImageColors
 
     private int $height = 0;
 
-    public function __construct(private readonly string $imagePath) {}
+    public function __construct(
+        private readonly string $imagePath,
+        private readonly ?float $onlyAbovePercentageOfImage = null,
+    ) {}
 
     /**
      * @return array<int, array{ red: int, green: int, blue: int, rgb: string, percentage: float }>
      * @throws UnknownImageFileTypeException|Exception
      */
-    public static function getFrom(string $imagePath): array
+    public static function getFrom(string $imagePath, ?float $onlyAbovePercentageOfImage = null): array
     {
-        return (new self($imagePath))->getColors();
+        return (new self($imagePath, $onlyAbovePercentageOfImage))->getColors();
     }
 
     /**
@@ -35,15 +38,17 @@ class ImageColors
 
         $colors = [];
 
-        foreach ($allColors as $colorData) {
-            $percentageOfImage = round(($colorData['count'] / $totalPixels) * 100, 1);
+        foreach ($allColors as $rgb => $pixelCount) {
+            [$red, $green, $blue] = explode(',', $rgb);
 
-            if ($percentageOfImage >= 0.5) {
+            $percentageOfImage = round(($pixelCount / $totalPixels) * 100, 1);
+
+            if ($this->onlyAbovePercentageOfImage === null || $percentageOfImage >= $this->onlyAbovePercentageOfImage) {
                 $colors[] = [
-                    'red' => $colorData['red'],
-                    'green' => $colorData['green'],
-                    'blue' => $colorData['blue'],
-                    'rgb' => $colorData['rgb'],
+                    'red' => (int) $red,
+                    'green' => (int) $green,
+                    'blue' => (int) $blue,
+                    'rgb' => '(' . $rgb . ')',
                     'percentage' => $percentageOfImage,
                 ];
             }
@@ -53,7 +58,7 @@ class ImageColors
     }
 
     /**
-     * @return array<string, array{ red: int, green: int, blue: int, rgb: string, count: int }>
+     * @return array<string, int>
      * @throws UnknownImageFileTypeException|Exception
      */
     protected function getAllColors(): array
@@ -76,23 +81,19 @@ class ImageColors
 
                 $blue = $rgb & 0xFF;
 
-                $rgbString = '(' . $red . ',' . $green . ',' . $blue . ')';
+                $rgbString = $red . ',' . $green . ',' . $blue;
 
                 if (isset($colors[$rgbString])) {
-                    $colors[$rgbString]['count'] += 1;
+                    $colors[$rgbString] += 1;
                 } else {
-                    $colors[$rgbString] = [
-                        'red' => $red,
-                        'green' => $green,
-                        'blue' => $blue,
-                        'rgb' => $rgbString,
-                        'count' => 1,
-                    ];
+                    $colors[$rgbString] = 1;
                 }
             }
         }
 
-        return $this->sortColorsByCount($colors);
+        arsort($colors);
+
+        return $colors;
     }
 
     /**
@@ -123,24 +124,5 @@ class ImageColors
         }
 
         throw new Exception('Can\'t read image file');
-    }
-
-    /**
-     * @param array<string, array{ red: int, green: int, blue: int, rgb: string, count: int }> $colors
-     * @return array<string, array{ red: int, green: int, blue: int, rgb: string, count: int }>
-     */
-    private function sortColorsByCount(array $colors): array
-    {
-        uasort($colors, function ($a, $b) {
-            if ($a['count'] > $b['count']) {
-                return -1;
-            } elseif ($a['count'] === $b['count']) {
-                return 0;
-            }
-
-            return 1;
-        });
-
-        return $colors;
     }
 }
