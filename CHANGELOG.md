@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2024-02-22
+### Added
+* Get all colors, not only the ones making up more than 0.5 percent of the image. But also add a method `onlyAbovePercentageOfImage()` to the `GetColors` step, to manually set a custom threshold.
+
+### Fixed
+* Improve memory usage of getting colors from an image.
+
 ## [1.0.0] - 2024-02-17
 ### Changed
 * Change the output of the `Screenshot` step, from an array `['response' => RespondedRequest, 'screenshotPath' => string]` to a `RespondedRequestWithScreenshot` object, that has a `screenshotPath` property. The problem with the previous solution was: when using the response cache, the step failed, because it gets a cached response from the loader that was not actually loaded in the headless browser. When the step afterwards tries to take a screenshot from the page that is still open in the browser, it just fails because there is no open page. Now, with the new `RespondedRequestWithScreenshot` object, the `screenshotPath` is also saved in the cached response.

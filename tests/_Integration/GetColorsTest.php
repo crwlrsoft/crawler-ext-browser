@@ -1,5 +1,7 @@
 <?php
 
+use Crwlr\Crawler\Crawler;
+use Crwlr\Crawler\Result;
 use Crwlr\CrawlerExtBrowser\Steps\GetColors;
 use Crwlr\CrawlerExtBrowser\Steps\Screenshot;
 
@@ -44,7 +46,10 @@ it('gets the colors from an image', function () {
 
     $crawler
         ->input(['screenshotPath' => helper_testFilePath('demo-screenshot.png')])
-        ->addStep(GetColors::fromImage());
+        ->addStep(
+            GetColors::fromImage()
+                ->onlyAbovePercentageOfImage(0.4)
+        );
 
     $results = iterator_to_array($crawler->run());
 
@@ -59,4 +64,44 @@ it('gets the colors from an image', function () {
             ['red' => 181, 'green' => 145, 'blue' => 144, 'rgb' => '(181,145,144)', 'percentage' => 3.1],
             ['red' => 0, 'green' => 0, 'blue' => 0, 'rgb' => '(0,0,0)', 'percentage' => 0.5],
         ]);
+});
+
+it('does not run out of memory with a very colorful image and 100MB of memory', function () {
+    Crawler::setMemoryLimit('500M');
+
+    $crawler = helper_getFastCrawler();
+
+    $crawler
+        ->input(['screenshotPath' => helper_testFilePath('demo-screenshot2.png')])
+        ->addStep(GetColors::fromImage()->addToResult());
+
+    $results = iterator_to_array($crawler->run());
+
+    $result = $results[0];
+
+    /** @var Result $result */
+
+    expect(count($result->get('colors')))->toBe(596002);
+});
+
+it('gets colors that make up at least a certain percentage when onlyAbovePercentageOfImage() was used', function () {
+    Crawler::setMemoryLimit('500M');
+
+    $crawler = helper_getFastCrawler();
+
+    $crawler
+        ->input(['screenshotPath' => helper_testFilePath('demo-screenshot2.png')])
+        ->addStep(
+            GetColors::fromImage()
+                ->onlyAbovePercentageOfImage(0.1)
+                ->addToResult()
+        );
+
+    $results = iterator_to_array($crawler->run());
+
+    $result = $results[0];
+
+    /** @var Result $result */
+
+    expect(count($result->get('colors')))->toBe(1);
 });
