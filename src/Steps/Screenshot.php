@@ -15,6 +15,8 @@ use Throwable;
 
 class Screenshot extends BrowserBaseStep
 {
+    protected ?float $waitAfterPageLoaded = null;
+
     /**
      * @param (string|string[])[] $headers
      */
@@ -35,6 +37,13 @@ class Screenshot extends BrowserBaseStep
         return new self($storePath, $headers);
     }
 
+    public function waitAfterPageLoaded(float $seconds): self
+    {
+        $this->waitAfterPageLoaded = $seconds;
+
+        return $this;
+    }
+
     /**
      * @param UriInterface|UriInterface[] $input
      * @return Generator<RespondedRequestWithScreenshot>
@@ -51,6 +60,10 @@ class Screenshot extends BrowserBaseStep
 
             if ($response) {
                 if (!$response instanceof RespondedRequestWithScreenshot) {
+                    if ($this->waitAfterPageLoaded) {
+                        usleep($this->waitAfterPageLoaded * 1000000);
+                    }
+
                     $screenshotPath = $this->makeScreenshot($response);
 
                     if (is_string($screenshotPath)) {
