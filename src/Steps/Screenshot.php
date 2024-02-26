@@ -61,7 +61,7 @@ class Screenshot extends BrowserBaseStep
             if ($response) {
                 if (!$response instanceof RespondedRequestWithScreenshot) {
                     if ($this->waitAfterPageLoaded) {
-                        usleep($this->waitAfterPageLoaded * 1000000);
+                        usleep((int) $this->waitAfterPageLoaded * 1000000);
                     }
 
                     $screenshotPath = $this->makeScreenshot($response);
