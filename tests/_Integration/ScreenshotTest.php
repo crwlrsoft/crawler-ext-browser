@@ -118,7 +118,9 @@ it('waits the defined amount of time before taking a screenshot', function () {
 
     $colors = $results[0]->get('colors');
 
-    expect($colors[0]['red'])
+    expect($colors)
+        ->toHaveCount(2)
+        ->and($colors[0]['red'])
         ->toBe(234)
         ->and($colors[0]['green'])
         ->toBe(51)
