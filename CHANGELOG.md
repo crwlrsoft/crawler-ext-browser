@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2024-02-26
+### Added
+* Option to wait a certain amount of time after loading a page, before taking the screenshot (`Screenshot::waitAfterPageLoaded()`).
+
 ## [1.1.0] - 2024-02-22
 ### Added
 * Get all colors, not only the ones making up more than 0.5 percent of the image. But also add a method `onlyAbovePercentageOfImage()` to the `GetColors` step, to manually set a custom threshold.
