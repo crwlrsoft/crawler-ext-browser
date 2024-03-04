@@ -1,5 +1,6 @@
 <?php
 
+use Crwlr\Crawler\Steps\Json;
 use Crwlr\Crawler\Steps\Loading\Http;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
 use Crwlr\CrawlerExtBrowser\Steps\GetColors;
@@ -136,4 +137,21 @@ it('waits the defined amount of time before taking a screenshot', function () {
         ->toBe(255)
         ->and($colors[1]['percentage'])
         ->toBeLessThanOrEqual(3.0);
+});
+
+it('sends custom headers', function () {
+    $crawler = helper_getFastCrawler();
+
+    $crawler
+        ->input('http://localhost:8000/print-headers')
+        ->addStep(
+            Screenshot::loadAndTake(helper_testFilePath(), ['x-custom-header' => 'foo'])
+        )
+        ->addStep(Json::get(['headers' => '*'])->addToResult());
+
+    $results = iterator_to_array($crawler->run());
+
+    expect($results)->toHaveCount(1)
+        ->and($results[0]->get('headers'))->toBeArray()
+        ->and($results[0]->get('headers')['x-custom-header'])->toBe('foo');
 });

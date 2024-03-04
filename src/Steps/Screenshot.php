@@ -111,11 +111,6 @@ class Screenshot extends BrowserBaseStep
         return null;
     }
 
-    protected function validateAndSanitizeInput(mixed $input): mixed
-    {
-        return $this->validateAndSanitizeToUriInterface($input);
-    }
-
     protected function fullStorePathFromResponse(RespondedRequest $response): string
     {
         $fileName = $response->cacheKey() . '-' . time() . '.png';
