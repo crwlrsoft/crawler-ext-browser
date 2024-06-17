@@ -33,12 +33,20 @@
     },
     "require": {
         "php": "^8.1",
-        "crwlr/crawler": "^1.7.0"
+        "crwlr/crawler": "^1.9",
+        "crwlr/crwl-extension-utils": "^2.3"
     },
     "require-dev": {
         "pestphp/pest": "^2.19",
         "phpstan/phpstan": "^1.10",
         "friendsofphp/php-cs-fixer": "^3.30"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Crwlr\\CrawlerExtBrowser\\ServiceProvider"
+            ]
+        }
     },
     "suggest": {
         "ext-gd": "*"

@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2024-06-17
+### Added
+* Merge things from the `crwlr/crwl-ext-browser` package to this one, because they are too tightly coupled. The other package will be abandoned.
+* Add `timeout` config param to `ScreenshotBuilder`, therefore also require `crwlr/crawler` v1.9.0 (or greater), with the new functionality to configure timeouts for the headless browser.
+
 ## [1.2.1] - 2024-03-04
 ### Fixed
 * Remove input validation in screenshot step, so it automatically uses the validation method of the `HttpBase` step, so it also allows to use the `useInputKeyAs...` methods.
