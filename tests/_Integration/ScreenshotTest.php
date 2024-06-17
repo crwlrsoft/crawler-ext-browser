@@ -159,21 +159,22 @@ it('sends custom headers', function () {
         ->and($results[0]->get('headers')['x-custom-header'])->toBe('foo');
 });
 
-it('uses the defined timeout', function () {
+it('uses the defined timeout and changes it back after execution', function () {
     $crawler = helper_getFastCrawler();
+
+    $defaultTimeout = $crawler->getLoader()->browserHelper()->getTimeout();
+
+    $step = Screenshot::loadAndTake(helper_testFilePath())->timeout(0.5);
 
     $crawler
         ->input('http://localhost:8000/timeout')
-        ->addStep(
-            Screenshot::loadAndTake(helper_testFilePath())->timeout(0.5),
-        );
+        ->addStep($step);
 
     $results = iterator_to_array($crawler->run());
 
     $output = $this->getActualOutputForAssertion();
 
-    error_log(var_export($output, true));
-
     expect($results)->toHaveCount(0)
-        ->and($output)->toContain('Failed to load http://localhost:8000/timeout: Operation timed out after 500ms');
+        ->and($output)->toContain('Failed to load http://localhost:8000/timeout: Operation timed out after 500ms')
+        ->and($crawler->getLoader()->browserHelper()->getTimeout())->toBe($defaultTimeout);
 });
