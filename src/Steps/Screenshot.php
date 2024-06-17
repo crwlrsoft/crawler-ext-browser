@@ -69,7 +69,6 @@ class Screenshot extends BrowserBaseStep
     protected function invoke(mixed $input): Generator
     {
         $this->switchBefore();
-        $this->_switchLoaderBefore();
 
         $input = !is_array($input) ? [$input] : $input;
 
@@ -99,7 +98,7 @@ class Screenshot extends BrowserBaseStep
 
         $this->resetInputRequestParams();
 
-        $this->_switchLoaderAfterwards();
+        $this->switchAfterwards();
     }
 
     protected function switchBefore(): void
@@ -121,6 +120,8 @@ class Screenshot extends BrowserBaseStep
 
         if ($this->_previousBrowserTimeoutValue !== null) {
             $this->loader->browserHelper()->setTimeout($this->_previousBrowserTimeoutValue);
+
+            $this->_previousBrowserTimeoutValue = null;
         }
     }
 
