@@ -13,3 +13,11 @@ if ($route === '/screenshot-wait') {
 if ($route === '/print-headers') {
     return include(__DIR__ . '/_Server/PrintHeaders.php');
 }
+
+if ($route === '/timeout') {
+    sleep(1);
+
+    echo 'Hi';
+
+    return;
+}

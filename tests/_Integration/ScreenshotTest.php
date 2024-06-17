@@ -5,6 +5,9 @@ use Crwlr\Crawler\Steps\Loading\Http;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
 use Crwlr\CrawlerExtBrowser\Steps\GetColors;
 use Crwlr\CrawlerExtBrowser\Steps\Screenshot;
+use PHPUnit\Framework\TestCase;
+
+/** @var TestCase $this */
 
 afterEach(function () {
     helper_cleanFiles();
@@ -19,7 +22,7 @@ it('takes a screenshot', function () {
         ->input('http://localhost:8000/screenshot')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->addToResult('response')
+                ->keepAs('response'),
         );
 
     $results = iterator_to_array($crawler->run());
@@ -45,7 +48,7 @@ it('can be cached and remembers the screenshot path', function () {
         ->input('http://localhost:8000/screenshot')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->addToResult(['screenshotPath'])
+                ->keep(['screenshotPath']),
         );
 
     $results = iterator_to_array($crawler->run());
@@ -65,7 +68,7 @@ it('can be cached and remembers the screenshot path', function () {
         ->input('http://localhost:8000/screenshot')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->addToResult(['screenshotPath'])
+                ->keep(['screenshotPath']),
         );
 
     $results = iterator_to_array($crawler->run());
@@ -82,7 +85,7 @@ it('does not wait to take a screenshot by default', function () {
     $crawler
         ->input('http://localhost:8000/screenshot-wait')
         ->addStep(Screenshot::loadAndTake(helper_testFilePath()))
-        ->addStep(GetColors::fromImage()->addToResult());
+        ->addStep(GetColors::fromImage());
 
     $results = iterator_to_array($crawler->run());
 
@@ -109,9 +112,9 @@ it('waits the defined amount of time before taking a screenshot', function () {
         ->input('http://localhost:8000/screenshot-wait')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->waitAfterPageLoaded(1.1)
+                ->waitAfterPageLoaded(1.1),
         )
-        ->addStep(GetColors::fromImage()->addToResult());
+        ->addStep(GetColors::fromImage());
 
     $results = iterator_to_array($crawler->run());
 
@@ -145,13 +148,32 @@ it('sends custom headers', function () {
     $crawler
         ->input('http://localhost:8000/print-headers')
         ->addStep(
-            Screenshot::loadAndTake(helper_testFilePath(), ['x-custom-header' => 'foo'])
+            Screenshot::loadAndTake(helper_testFilePath(), ['x-custom-header' => 'foo']),
         )
-        ->addStep(Json::get(['headers' => '*'])->addToResult());
+        ->addStep(Json::get(['headers' => '*']));
 
     $results = iterator_to_array($crawler->run());
 
     expect($results)->toHaveCount(1)
         ->and($results[0]->get('headers'))->toBeArray()
         ->and($results[0]->get('headers')['x-custom-header'])->toBe('foo');
+});
+
+it('uses the defined timeout', function () {
+    $crawler = helper_getFastCrawler();
+
+    $crawler
+        ->input('http://localhost:8000/timeout')
+        ->addStep(
+            Screenshot::loadAndTake(helper_testFilePath())->timeout(0.5),
+        );
+
+    $results = iterator_to_array($crawler->run());
+
+    $output = $this->getActualOutputForAssertion();
+
+    error_log(var_export($output, true));
+
+    expect($results)->toHaveCount(0)
+        ->and($output)->toContain('Failed to load http://localhost:8000/timeout: Operation timed out after 500ms');
 });

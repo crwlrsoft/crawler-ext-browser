@@ -21,7 +21,7 @@ uses()
     ->beforeEach(function () {
         if (!isset(TestServerProcess::$process)) {
             TestServerProcess::$process = Process::fromShellCommandline(
-                'php -S localhost:8000 ' . __DIR__ . '/_Integration/Server.php'
+                'php -S localhost:8000 ' . __DIR__ . '/_Integration/Server.php',
             );
 
             TestServerProcess::$process->start();
@@ -54,7 +54,7 @@ function helper_getFastCrawler(): HttpCrawler
         {
             return new UserAgent(
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ' .
-                'Chrome/120.0.0.0 Safari/537.36'
+                'Chrome/120.0.0.0 Safari/537.36',
             );
         }
 
