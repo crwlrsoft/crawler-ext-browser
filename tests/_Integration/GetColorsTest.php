@@ -48,7 +48,7 @@ it('gets the colors from an image', function () {
         ->input(['screenshotPath' => helper_testFilePath('demo-screenshot.png')])
         ->addStep(
             GetColors::fromImage()
-                ->onlyAbovePercentageOfImage(0.4)
+                ->onlyAbovePercentageOfImage(0.4),
         );
 
     $results = iterator_to_array($crawler->run());
@@ -73,7 +73,7 @@ it('does not run out of memory with a very colorful image and 100MB of memory', 
 
     $crawler
         ->input(['screenshotPath' => helper_testFilePath('demo-screenshot2.png')])
-        ->addStep(GetColors::fromImage()->addToResult());
+        ->addStep(GetColors::fromImage());
 
     $results = iterator_to_array($crawler->run());
 
@@ -93,8 +93,7 @@ it('gets colors that make up at least a certain percentage when onlyAbovePercent
         ->input(['screenshotPath' => helper_testFilePath('demo-screenshot2.png')])
         ->addStep(
             GetColors::fromImage()
-                ->onlyAbovePercentageOfImage(0.1)
-                ->addToResult()
+                ->onlyAbovePercentageOfImage(0.1),
         );
 
     $results = iterator_to_array($crawler->run());

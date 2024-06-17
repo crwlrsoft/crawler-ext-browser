@@ -3,8 +3,8 @@
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Loader\Http\Messages\RespondedRequest;
+use Crwlr\Crawler\Steps\StepOutputType;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
-use Crwlr\Utils\Microseconds;
 use Exception;
 use Generator;
 use HeadlessChromium\Exception\CommunicationException;
@@ -54,6 +54,11 @@ class Screenshot extends BrowserBaseStep
         $this->browserTimeout = (int) ($seconds * 1000);
 
         return $this;
+    }
+
+    public function outputType(): StepOutputType
+    {
+        return StepOutputType::AssociativeArrayOrObject;
     }
 
     /**

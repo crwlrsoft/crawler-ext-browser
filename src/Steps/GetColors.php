@@ -3,6 +3,7 @@
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Steps\Step;
+use Crwlr\Crawler\Steps\StepOutputType;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
 use Crwlr\CrawlerExtBrowser\Utils\ImageColors;
 use Exception;
@@ -22,6 +23,11 @@ class GetColors extends Step
         $this->onlyAbovePercentageOfImage = $percentage;
 
         return $this;
+    }
+
+    public function outputType(): StepOutputType
+    {
+        return StepOutputType::AssociativeArrayOrObject;
     }
 
     /**
