@@ -4,6 +4,7 @@ namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Loader\Http\Messages\RespondedRequest;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
+use Crwlr\Utils\Microseconds;
 use Exception;
 use Generator;
 use HeadlessChromium\Exception\CommunicationException;
@@ -16,6 +17,10 @@ use Throwable;
 class Screenshot extends BrowserBaseStep
 {
     protected ?float $waitAfterPageLoaded = null;
+
+    protected ?int $browserTimeout = null;
+
+    protected ?int $_previousBrowserTimeoutValue = null;
 
     /**
      * @param (string|string[])[] $headers
@@ -44,6 +49,13 @@ class Screenshot extends BrowserBaseStep
         return $this;
     }
 
+    public function timeout(float $seconds): self
+    {
+        $this->browserTimeout = (int) ($seconds * 1000);
+
+        return $this;
+    }
+
     /**
      * @param UriInterface|UriInterface[] $input
      * @return Generator<RespondedRequestWithScreenshot>
@@ -51,6 +63,7 @@ class Screenshot extends BrowserBaseStep
      */
     protected function invoke(mixed $input): Generator
     {
+        $this->switchBefore();
         $this->_switchLoaderBefore();
 
         $input = !is_array($input) ? [$input] : $input;
@@ -82,6 +95,28 @@ class Screenshot extends BrowserBaseStep
         $this->resetInputRequestParams();
 
         $this->_switchLoaderAfterwards();
+    }
+
+    protected function switchBefore(): void
+    {
+        $this->_switchLoaderBefore();
+
+        if ($this->browserTimeout !== null) {
+            $browserHelper = $this->loader->browserHelper();
+
+            $this->_previousBrowserTimeoutValue = $browserHelper->getTimeout();
+
+            $browserHelper->setTimeout($this->browserTimeout);
+        }
+    }
+
+    protected function switchAfterwards(): void
+    {
+        $this->_switchLoaderAfterwards();
+
+        if ($this->_previousBrowserTimeoutValue !== null) {
+            $this->loader->browserHelper()->setTimeout($this->_previousBrowserTimeoutValue);
+        }
     }
 
     protected function makeScreenshot(RespondedRequest $response): ?string
