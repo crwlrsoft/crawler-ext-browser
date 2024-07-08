@@ -162,7 +162,7 @@ it('sends custom headers', function () {
 it('uses the defined timeout and changes it back after execution', function () {
     $crawler = helper_getFastCrawler();
 
-    $defaultTimeout = $crawler->getLoader()->browserHelper()->getTimeout();
+    $defaultTimeout = $crawler->getLoader()->browser()->getTimeout();
 
     $step = Screenshot::loadAndTake(helper_testFilePath())->timeout(0.5);
 
@@ -176,5 +176,5 @@ it('uses the defined timeout and changes it back after execution', function () {
 
     expect($results)->toHaveCount(0)
         ->and($output)->toContain('Failed to load http://localhost:8000/timeout: Operation timed out after 500ms')
-        ->and($crawler->getLoader()->browserHelper()->getTimeout())->toBe($defaultTimeout);
+        ->and($crawler->getLoader()->browser()->getTimeout())->toBe($defaultTimeout);
 });

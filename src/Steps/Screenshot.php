@@ -106,11 +106,9 @@ class Screenshot extends BrowserBaseStep
         $this->_switchLoaderBefore();
 
         if ($this->browserTimeout !== null) {
-            $browserHelper = $this->loader->browserHelper();
+            $this->_previousBrowserTimeoutValue = $this->loader->browser()->getTimeout();
 
-            $this->_previousBrowserTimeoutValue = $browserHelper->getTimeout();
-
-            $browserHelper->setTimeout($this->browserTimeout);
+            $this->loader->browser()->setTimeout($this->browserTimeout);
         }
     }
 
@@ -119,7 +117,7 @@ class Screenshot extends BrowserBaseStep
         $this->_switchLoaderAfterwards();
 
         if ($this->_previousBrowserTimeoutValue !== null) {
-            $this->loader->browserHelper()->setTimeout($this->_previousBrowserTimeoutValue);
+            $this->loader->browser()->setTimeout($this->_previousBrowserTimeoutValue);
 
             $this->_previousBrowserTimeoutValue = null;
         }
@@ -127,7 +125,7 @@ class Screenshot extends BrowserBaseStep
 
     protected function makeScreenshot(RespondedRequest $response): ?string
     {
-        $page = $this->loader->browserHelper()->getOpenPage();
+        $page = $this->loader->browser()->getOpenPage();
 
         if ($page) {
             try {
