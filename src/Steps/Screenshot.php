@@ -2,6 +2,7 @@
 
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
+use Crwlr\Crawler\Loader\Http\Exceptions\LoadingException;
 use Crwlr\Crawler\Loader\Http\Messages\RespondedRequest;
 use Crwlr\Crawler\Steps\StepOutputType;
 use Crwlr\CrawlerExtBrowser\Aggregates\RespondedRequestWithScreenshot;
@@ -22,6 +23,8 @@ class Screenshot extends BrowserBaseStep
 
     protected ?int $_previousBrowserTimeoutValue = null;
 
+    protected bool $fromOpenPage = false;
+
     /**
      * @param (string|string[])[] $headers
      */
@@ -33,13 +36,23 @@ class Screenshot extends BrowserBaseStep
     }
 
     /**
-     * @param string $storePath
      * @param (string|string[])[] $headers
-     * @return Screenshot
      */
     public static function loadAndTake(string $storePath, array $headers = []): Screenshot
     {
         return new self($storePath, $headers);
+    }
+
+    /**
+     * @param (string|string[])[] $headers
+     */
+    public static function take(string $storePath, array $headers = []): Screenshot
+    {
+        $step = new self($storePath, $headers);
+
+        $step->fromOpenPage = true;
+
+        return $step;
     }
 
     public function waitAfterPageLoaded(float $seconds): self
@@ -62,7 +75,23 @@ class Screenshot extends BrowserBaseStep
     }
 
     /**
-     * @param UriInterface|UriInterface[] $input
+     * @return UriInterface|UriInterface[]|RespondedRequest
+     */
+    protected function validateAndSanitizeInput(mixed $input): mixed
+    {
+        if (!$this->fromOpenPage) {
+            return parent::validateAndSanitizeInput($input);
+        }
+
+        if (!$input instanceof RespondedRequest) {
+            throw new \InvalidArgumentException('The Screenshot::take() step needs an HTTP response as input.');
+        }
+
+        return $input;
+    }
+
+    /**
+     * @param UriInterface|UriInterface[]|RespondedRequest $input
      * @return Generator<RespondedRequestWithScreenshot>
      * @throws Exception|InvalidArgumentException
      */
@@ -70,35 +99,54 @@ class Screenshot extends BrowserBaseStep
     {
         $this->switchBefore();
 
+        if ($this->fromOpenPage && $input instanceof RespondedRequest) {
+            yield from $this->fromOpenPage($input);
+        } elseif ($input instanceof UriInterface || is_array($input)) {
+            yield from $this->fromUris($input);
+        }
+
+        $this->switchAfterwards();
+    }
+
+    /**
+     * @param UriInterface|UriInterface[] $input
+     * @throws LoadingException|InvalidArgumentException|Exception
+     */
+    protected function fromUris(UriInterface|array $input): Generator
+    {
         $input = !is_array($input) ? [$input] : $input;
 
         foreach ($input as $uri) {
             $response = $this->getResponseFromInputUri($uri);
 
             if ($response) {
-                if (!$response instanceof RespondedRequestWithScreenshot) {
-                    if ($this->waitAfterPageLoaded) {
-                        usleep((int) $this->waitAfterPageLoaded * 1000000);
-                    }
+                yield from $this->fromOpenPage($response);
+            }
+        }
+    }
 
-                    $screenshotPath = $this->makeScreenshot($response);
+    /**
+     * @throws InvalidArgumentException|Exception
+     */
+    protected function fromOpenPage(RespondedRequest $response): Generator
+    {
+        if (!$response instanceof RespondedRequestWithScreenshot) {
+            if ($this->waitAfterPageLoaded) {
+                usleep((int) $this->waitAfterPageLoaded * 1000000);
+            }
 
-                    if (is_string($screenshotPath)) {
-                        $response = RespondedRequestWithScreenshot::fromRespondedRequest($response, $screenshotPath);
+            $screenshotPath = $this->makeScreenshot($response);
 
-                        $this->loader->addToCache($response);
-                    } else {
-                        return;
-                    }
-                }
+            if (is_string($screenshotPath)) {
+                $response = RespondedRequestWithScreenshot::fromRespondedRequest($response, $screenshotPath);
 
-                yield $response;
+                $this->loader->addToCache($response);
+            } else {
+                return;
             }
         }
 
-        $this->resetInputRequestParams();
-
-        $this->switchAfterwards();
+        yield $response;
     }
 
     protected function switchBefore(): void
@@ -114,6 +162,8 @@ class Screenshot extends BrowserBaseStep
 
     protected function switchAfterwards(): void
     {
+        $this->resetInputRequestParams();
+
         $this->_switchLoaderAfterwards();
 
         if ($this->_previousBrowserTimeoutValue !== null) {
@@ -132,6 +182,8 @@ class Screenshot extends BrowserBaseStep
                 $fullStorePath = $this->fullStorePathFromResponse($response);
 
                 $page->screenshot()->saveToFile($fullStorePath);
+
+                $this->logger?->info('Took screenshot.');
 
                 return $fullStorePath;
             } catch (CommunicationException $exception) {

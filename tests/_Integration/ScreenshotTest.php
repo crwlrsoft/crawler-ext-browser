@@ -178,3 +178,43 @@ it('uses the defined timeout and changes it back after execution', function () {
         ->and($output)->toContain('Failed to load http://localhost:8000/timeout: Operation timed out after 500ms')
         ->and($crawler->getLoader()->browser()->getTimeout())->toBe($defaultTimeout);
 });
+
+test('Screenshot::take() can be used after a normal loading step and screenshots the prev. opened page', function () {
+    $crawler = helper_getFastCrawler();
+
+    $crawler->getLoader()->useHeadlessBrowser();
+
+    $crawler
+        ->input('http://localhost:8000/screenshot')
+        ->addStep(Http::get())
+        ->addStep(Screenshot::take(helper_testFilePath()));
+
+    $results = iterator_to_array($crawler->run());
+
+    $output = $this->getActualOutputForAssertion();
+
+    expect($results)->toHaveCount(1)
+        ->and(explode('Loaded http://localhost:8000/screenshot', $output))->toHaveCount(2);
+});
+
+it('Screenshot::take() can even be used after an Http::crawl() step', function () {
+    $crawler = helper_getFastCrawler();
+
+    $crawler->getLoader()->useHeadlessBrowser();
+
+    $crawler
+        ->input('http://localhost:8000/crawl-screenshot')
+        ->addStep(Http::crawl())
+        ->addStep(
+            Screenshot::take(helper_testFilePath())
+                ->keep(['url', 'screenshotPath']),
+        );
+
+    $results = iterator_to_array($crawler->run(), false);
+
+    expect($results)->toHaveCount(2)
+        ->and($results[0]->get('url'))->toBe('http://localhost:8000/crawl-screenshot')
+        ->and($results[0]->get('screenshotPath'))->not->toBeEmpty()
+        ->and($results[1]->get('url'))->toBe('http://localhost:8000/crawl-screenshot/1')
+        ->and($results[1]->get('screenshotPath'))->not->toBeEmpty();
+});
