@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.0] - 2024-07-08
+### Added
+* `Screenshot::take()` in addition to `Screenshot::loadAndTake()`, allowing to take a screenshot of an already opened page, in a separate step. This way you can even add this step after an `Http::crawl()` step and get screenshots of all the crawled pages.
+
 ### Fixed
 * Change calls to `HttpLoader::browserHelper()` to `HttpLoader::browser()` and require `crwlr/crawler` with constraint `^1.9.3` to make sure the method exists.
 
