@@ -49,7 +49,7 @@ function helper_getFastLoader(UserAgentInterface $userAgent, ?LoggerInterface $l
 
 function helper_getFastCrawler(): HttpCrawler
 {
-    return new class () extends HttpCrawler {
+    return new class extends HttpCrawler {
         protected function userAgent(): UserAgentInterface
         {
             return new UserAgent(
@@ -70,8 +70,6 @@ function helper_getFastCrawlerWithCache(): HttpCrawler
     $crawler = helper_getFastCrawler();
 
     $loader = $crawler->getLoader();
-
-    /** @var HttpLoader $loader */
 
     $loader->setCache(new FileCache(__DIR__ . '/_cache'));
 
