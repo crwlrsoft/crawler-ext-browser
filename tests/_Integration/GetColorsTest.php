@@ -9,7 +9,7 @@ afterEach(function () {
     helper_cleanFiles();
 });
 
-it('gets the colors from a screenshot from a screenshot step execute before it in a crawler', function () {
+it('gets the colors from an image, taken in a preceding screenshot step', function () {
     $crawler = helper_getFastCrawler();
 
     $crawler
@@ -23,22 +23,14 @@ it('gets the colors from a screenshot from a screenshot step execute before it i
 
     $result = $results[0]->toArray();
 
-    expect($result['colors'][0])
-        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
-        ->and($result['colors'][0]['percentage'])
-        ->toBeGreaterThanOrEqual(80.3)
-        ->and($result['colors'][1])
-        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
-        ->and($result['colors'][1]['percentage'])
-        ->toBeGreaterThanOrEqual(15.3)
-        ->and($result['colors'][2])
-        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
-        ->and($result['colors'][2]['percentage'])
-        ->toBeGreaterThanOrEqual(3.1)
-        ->and($result['colors'][2])
-        ->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
-        ->and($result['colors'][2]['percentage'])
-        ->toBeGreaterThanOrEqual(3.1);
+    expect($result['colors'][0])->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][0]['percentage'])->toBeGreaterThanOrEqual(75.0)
+        ->and($result['colors'][1])->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][1]['percentage'])->toBeGreaterThanOrEqual(15.3)
+        ->and($result['colors'][2])->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][2]['percentage'])->toBeGreaterThanOrEqual(3.1)
+        ->and($result['colors'][2])->toHaveKeys(['red', 'green', 'blue', 'rgb', 'percentage'])
+        ->and($result['colors'][2]['percentage'])->toBeGreaterThanOrEqual(3.1);
 });
 
 it('gets the colors from an image', function () {

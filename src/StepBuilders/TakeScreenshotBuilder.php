@@ -9,16 +9,16 @@ use Crwlr\CrwlExtensionUtils\ConfigParam;
 use Crwlr\CrwlExtensionUtils\StepBuilder;
 use Exception;
 
-class ScreenshotBuilder extends StepBuilder
+class TakeScreenshotBuilder extends StepBuilder
 {
     public function stepId(): string
     {
-        return 'browser.screenshot';
+        return 'browser.takeScreenshot';
     }
 
     public function label(): string
     {
-        return 'Load a page in the browser and take a screenshot.';
+        return 'Take a screenshot of a previously loaded page.';
     }
 
     /**
@@ -30,18 +30,12 @@ class ScreenshotBuilder extends StepBuilder
             throw new Exception('No file storage path defined.');
         }
 
-        $step = Screenshot::loadAndTake($this->fileStoragePath);
+        $step = Screenshot::take($this->fileStoragePath);
 
         $waitAfterPageLoaded = $this->getValueFromConfigArray('waitAfterPageLoaded', $stepConfig);
 
         if ($waitAfterPageLoaded !== null && $waitAfterPageLoaded > 0.0) {
             $step->waitAfterPageLoaded($waitAfterPageLoaded);
-        }
-
-        $timeout = $this->getValueFromConfigArray('timeout', $stepConfig);
-
-        if (is_float($timeout)) {
-            $step->timeout($timeout);
         }
 
         return $step;
@@ -53,20 +47,11 @@ class ScreenshotBuilder extends StepBuilder
             ConfigParam::float('waitAfterPageLoaded')
                 ->inputLabel('Wait X seconds')
                 ->description('Wait X seconds after the page is fully loaded, before taking the screenshot.'),
-            ConfigParam::float('timeout')
-                ->inputLabel('Timeout')
-                ->description('Timeout in seconds. After waiting for this amount of time, a request will be cancelled.')
-                ->default(30.0),
         ];
     }
 
     public function outputType(): StepOutputType
     {
         return StepOutputType::AssociativeArrayOrObject;
-    }
-
-    public function isLoadingStep(): bool
-    {
-        return true;
     }
 }

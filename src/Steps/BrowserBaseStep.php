@@ -3,16 +3,17 @@
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
 use Crwlr\Crawler\Loader\Http\HttpLoader;
-use Crwlr\Crawler\Loader\LoaderInterface;
 use Crwlr\Crawler\Steps\Loading\HttpBase;
 use Crwlr\CrawlerExtBrowser\Exceptions\InvalidStepConfiguration;
+use Exception;
+
+/**
+ * @method HttpLoader getLoader()
+ */
 
 abstract class BrowserBaseStep extends HttpBase
 {
-    /**
-     * @var HttpLoader
-     */
-    protected LoaderInterface $loader;
+    protected HttpLoader $loader;
 
     protected bool $_switchBackToHttpClientLoaderAfterwards = false;
 
@@ -34,17 +35,20 @@ abstract class BrowserBaseStep extends HttpBase
 
     protected function _switchLoaderBefore(): void
     {
-        if (!$this->loader->usesHeadlessBrowser()) {
-            $this->loader->useHeadlessBrowser();
+        if (!$this->getLoader()->usesHeadlessBrowser()) {
+            $this->getLoader()->useHeadlessBrowser();
 
             $this->_switchBackToHttpClientLoaderAfterwards = true;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     protected function _switchLoaderAfterwards(): void
     {
         if ($this->_switchBackToHttpClientLoaderAfterwards) {
-            $this->loader->useHttpClient();
+            $this->getLoader()->useHttpClient();
 
             $this->_switchBackToHttpClientLoaderAfterwards = false;
         }

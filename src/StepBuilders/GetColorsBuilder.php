@@ -3,6 +3,7 @@
 namespace Crwlr\CrawlerExtBrowser\StepBuilders;
 
 use Crwlr\Crawler\Steps\StepInterface;
+use Crwlr\Crawler\Steps\StepOutputType;
 use Crwlr\CrawlerExtBrowser\Steps\GetColors;
 use Crwlr\CrwlExtensionUtils\ConfigParam;
 use Crwlr\CrwlExtensionUtils\StepBuilder;
@@ -43,5 +44,10 @@ class GetColorsBuilder extends StepBuilder
                 ->inputLabel('Only Above Percentage')
                 ->description('Get only colors that make up at least a certain percentage of the image.'),
         ];
+    }
+
+    public function outputType(): StepOutputType
+    {
+        return StepOutputType::AssociativeArrayOrObject;
     }
 }

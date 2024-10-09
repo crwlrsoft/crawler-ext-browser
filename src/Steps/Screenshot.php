@@ -140,7 +140,7 @@ class Screenshot extends BrowserBaseStep
             if (is_string($screenshotPath)) {
                 $response = RespondedRequestWithScreenshot::fromRespondedRequest($response, $screenshotPath);
 
-                $this->loader->addToCache($response);
+                $this->getLoader()->addToCache($response);
             } else {
                 return;
             }
@@ -154,12 +154,15 @@ class Screenshot extends BrowserBaseStep
         $this->_switchLoaderBefore();
 
         if ($this->browserTimeout !== null) {
-            $this->_previousBrowserTimeoutValue = $this->loader->browser()->getTimeout();
+            $this->_previousBrowserTimeoutValue = $this->getLoader()->browser()->getTimeout();
 
-            $this->loader->browser()->setTimeout($this->browserTimeout);
+            $this->getLoader()->browser()->setTimeout($this->browserTimeout);
         }
     }
 
+    /**
+     * @throws Exception
+     */
     protected function switchAfterwards(): void
     {
         $this->resetInputRequestParams();
@@ -167,7 +170,7 @@ class Screenshot extends BrowserBaseStep
         $this->_switchLoaderAfterwards();
 
         if ($this->_previousBrowserTimeoutValue !== null) {
-            $this->loader->browser()->setTimeout($this->_previousBrowserTimeoutValue);
+            $this->getLoader()->browser()->setTimeout($this->_previousBrowserTimeoutValue);
 
             $this->_previousBrowserTimeoutValue = null;
         }
@@ -175,7 +178,7 @@ class Screenshot extends BrowserBaseStep
 
     protected function makeScreenshot(RespondedRequest $response): ?string
     {
-        $page = $this->loader->browser()->getOpenPage();
+        $page = $this->getLoader()->browser()->getOpenPage();
 
         if ($page) {
             try {
