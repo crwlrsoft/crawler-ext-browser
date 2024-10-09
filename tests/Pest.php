@@ -58,7 +58,7 @@ function helper_getFastCrawler(): HttpCrawler
             );
         }
 
-        protected function loader(UserAgentInterface $userAgent, LoggerInterface $logger): LoaderInterface|array
+        protected function loader(UserAgentInterface $userAgent, LoggerInterface $logger): LoaderInterface
         {
             return helper_getFastLoader($userAgent, $logger);
         }

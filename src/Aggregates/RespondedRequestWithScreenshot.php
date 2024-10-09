@@ -48,9 +48,9 @@ class RespondedRequestWithScreenshot extends RespondedRequest
         $this->screenshotPath = $data['screenshotPath'] ?? '';
     }
 
-    public function toArrayForAddToResult(): array
+    public function toArrayForResult(): array
     {
-        $array = parent::toArrayForAddToResult();
+        $array = parent::toArrayForResult();
 
         $array['screenshotPath'] = $this->screenshotPath;
 

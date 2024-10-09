@@ -4,6 +4,7 @@ namespace Crwlr\CrawlerExtBrowser;
 
 use Crwlr\CrawlerExtBrowser\StepBuilders\GetColorsBuilder;
 use Crwlr\CrawlerExtBrowser\StepBuilders\ScreenshotBuilder;
+use Crwlr\CrawlerExtBrowser\StepBuilders\TakeScreenshotBuilder;
 use Crwlr\CrwlExtensionUtils\Exceptions\DuplicateExtensionPackageException;
 use Crwlr\CrwlExtensionUtils\Exceptions\DuplicateStepIdException;
 use Crwlr\CrwlExtensionUtils\Exceptions\InvalidStepException;
@@ -23,6 +24,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->make(ExtensionPackageManager::class)
             ->registerPackage('crwlr/crawler-ext-browser')
             ->registerStep(ScreenshotBuilder::class)
+            ->registerStep(TakeScreenshotBuilder::class)
             ->registerStep(GetColorsBuilder::class);
     }
 }
