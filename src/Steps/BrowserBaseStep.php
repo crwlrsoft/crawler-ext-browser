@@ -2,19 +2,12 @@
 
 namespace Crwlr\CrawlerExtBrowser\Steps;
 
-use Crwlr\Crawler\Loader\Http\HttpLoader;
 use Crwlr\Crawler\Steps\Loading\HttpBase;
 use Crwlr\CrawlerExtBrowser\Exceptions\InvalidStepConfiguration;
 use Exception;
 
-/**
- * @method HttpLoader getLoader()
- */
-
 abstract class BrowserBaseStep extends HttpBase
 {
-    protected HttpLoader $loader;
-
     protected bool $_switchBackToHttpClientLoaderAfterwards = false;
 
     /**
