@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2024-10-xx
+## [2.0.0] - 2024-10-15
 ### Added
 * Require crwlr/crawler v2 and crwlr/crwl-extension-utils min v2.4.
 
