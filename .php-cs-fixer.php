@@ -17,4 +17,5 @@ return (new Config())
         'array_syntax' => ['syntax' => 'short'],
         'no_unused_imports' => true,
     ])
-    ->setRiskyAllowed(true);
+    ->setRiskyAllowed(true)
+    ->setUsingCache(true);
