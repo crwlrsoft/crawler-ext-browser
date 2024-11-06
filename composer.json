@@ -26,6 +26,12 @@
         "source": "https://github.com/crwlrsoft/crawler-ext-browser",
         "docs": "https://www.crwlr.software/packages/crawler-ext-browser"
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/otsch"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Crwlr\\CrawlerExtBrowser\\": "src/"
@@ -37,9 +43,9 @@
         "crwlr/crwl-extension-utils": "^2.4"
     },
     "require-dev": {
-        "pestphp/pest": "^2.19",
+        "pestphp/pest": "^2.19|^3.0",
         "phpstan/phpstan": "^1.10",
-        "friendsofphp/php-cs-fixer": "^3.30"
+        "friendsofphp/php-cs-fixer": "^3.57"
     },
     "extra": {
         "laravel": {
@@ -52,7 +58,7 @@
         "ext-gd": "*"
     },
     "scripts": {
-        "test": "@php vendor/bin/pest",
+        "test": "@php vendor/bin/pest --display-warnings --bail",
         "cs": "@php vendor/bin/php-cs-fixer fix -v --dry-run",
         "cs-fix": "@php vendor/bin/php-cs-fixer fix -v",
         "stan": "@php vendor/bin/phpstan analyse -c phpstan.neon",
