@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2024-12-21
+### Fixed
+* Shorter label in `InitSessionBuilder`.
+
 ## [2.1.0] - 2024-12-21
 ### Added
 * The new `InitSession` step. It initiates a session by making a headless browser request to a URL. After completing the request, it yields the same input URL as output, allowing it to be subsequently loaded using a simple HTTP client with session cookie headers obtained from the initial browser request.
