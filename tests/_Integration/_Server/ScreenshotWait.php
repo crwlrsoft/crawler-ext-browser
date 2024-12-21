@@ -11,7 +11,7 @@
         element.style.width = '1920px';
         element.style.height = '1000px';
         element.style.backgroundColor = 'red';
-    }, 1000);
+    }, 1500);
 </script>
 </body>
 </html>
