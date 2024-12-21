@@ -93,10 +93,6 @@ it('does not wait to take a screenshot by default', function () {
 
     $colors = $results[0]->get('colors');
 
-    if (count($colors) > 1) {
-        helper_dump($colors);
-    }
-
     expect($colors)
         ->toHaveCount(1)
         ->and($colors[0])
@@ -107,7 +103,7 @@ it('does not wait to take a screenshot by default', function () {
             'rgb' => '(255,255,255)',
             'percentage' => 100.0,
         ]);
-})->only();
+});
 
 it('waits the defined amount of time before taking a screenshot', function () {
     $crawler = helper_getFastCrawler();
@@ -116,7 +112,7 @@ it('waits the defined amount of time before taking a screenshot', function () {
         ->input('http://localhost:8000/screenshot-wait')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->waitAfterPageLoaded(1.1),
+                ->waitAfterPageLoaded(2.0),
         )
         ->addStep(GetColors::fromImage());
 
