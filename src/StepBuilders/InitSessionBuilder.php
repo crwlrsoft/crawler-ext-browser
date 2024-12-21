@@ -17,9 +17,7 @@ class InitSessionBuilder extends StepBuilder
 
     public function label(): string
     {
-        return 'Initiates a session by making a headless browser request to a URL. After completing the request, ' .
-            'it yields the same input URL as output, allowing it to be subsequently loaded using a simple HTTP ' .
-            'client with session cookie headers obtained from the initial browser request.';
+        return 'Loads the input URL to initiate a session.';
     }
 
     /**
