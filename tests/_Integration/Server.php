@@ -33,3 +33,19 @@ if (str_starts_with($route, '/crawl-screenshot')) {
 
     return include(__DIR__ . '/_Server/CrawlScreenshot.php');
 }
+
+if (str_starts_with($route, '/init_session')) {
+    $cookie = $_COOKIE['session'] ?? null;
+
+    if ($cookie) {
+        return include(__DIR__ . '/_Server/PrintCookie.php');
+    }
+
+    $redirectParam = $_GET['redirect'] ?? null;
+
+    if (!$redirectParam) {
+        http_response_code(403);
+    }
+
+    return include(__DIR__ . '/_Server/InitSessionRedirect.php');
+}
