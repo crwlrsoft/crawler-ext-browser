@@ -112,7 +112,7 @@ it('waits the defined amount of time before taking a screenshot', function () {
         ->input('http://localhost:8000/screenshot-wait')
         ->addStep(
             Screenshot::loadAndTake(helper_testFilePath())
-                ->waitAfterPageLoaded(2.0),
+                ->waitAfterPageLoaded(3.0),
         )
         ->addStep(GetColors::fromImage());
 
