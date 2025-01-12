@@ -1,6 +1,9 @@
 <?php
 
 use Crwlr\CrawlerExtBrowser\Steps\InfiniteScrolling;
+use PHPUnit\Framework\TestCase;
+
+/** @var TestCase $this */
 
 it(
     'Scrolls down until it can not scroll down any further',
