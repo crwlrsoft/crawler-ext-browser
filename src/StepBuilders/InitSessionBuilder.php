@@ -17,7 +17,7 @@ class InitSessionBuilder extends StepBuilder
 
     public function label(): string
     {
-        return 'Loads the input URL to initiate a session.';
+        return 'Load URL to initiate a session.';
     }
 
     /**
