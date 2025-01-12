@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.2] - 2025-01-12
+### Fixed
+* When the `InfiniteScrolling` step receives a response that is served from cache, it does not try to get an open browser page and scroll down (requires crwlr/crawler v3.2.0).
+
 ## [2.2.1] - 2025-01-12
 ### Fixed
 * Forgot to register the new `InfiniteScrollingBuilder` in the `ServiceProvider`. Fixed it.

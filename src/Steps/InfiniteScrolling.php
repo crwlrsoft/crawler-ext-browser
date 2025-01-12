@@ -121,7 +121,11 @@ class InfiniteScrolling extends BrowserBaseStep
             try {
                 $response = $this->getResponseFromInputUri($uri);
 
-                if ($response) {
+                if ($response && method_exists($response, 'isServedFromCache') && $response->isServedFromCache()) {
+                    yield $response;
+
+                    break;
+                } elseif ($response) {
                     yield from $this->scrollDownUntilTheEnd($response);
 
                     break;
