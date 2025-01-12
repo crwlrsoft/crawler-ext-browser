@@ -3,6 +3,7 @@
 namespace Crwlr\CrawlerExtBrowser;
 
 use Crwlr\CrawlerExtBrowser\StepBuilders\GetColorsBuilder;
+use Crwlr\CrawlerExtBrowser\StepBuilders\InfiniteScrollingBuilder;
 use Crwlr\CrawlerExtBrowser\StepBuilders\InitSessionBuilder;
 use Crwlr\CrawlerExtBrowser\StepBuilders\ScreenshotBuilder;
 use Crwlr\CrawlerExtBrowser\StepBuilders\TakeScreenshotBuilder;
@@ -27,6 +28,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ->registerStep(ScreenshotBuilder::class)
             ->registerStep(TakeScreenshotBuilder::class)
             ->registerStep(GetColorsBuilder::class)
-            ->registerStep(InitSessionBuilder::class);
+            ->registerStep(InitSessionBuilder::class)
+            ->registerStep(InfiniteScrollingBuilder::class);
     }
 }
