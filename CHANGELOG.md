@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2025-01-12
+### Added
+* The new `InfiniteScrolling` step. It (optionally loads a page and) scrolls down until the end.
+
 ## [2.1.1] - 2024-12-21
 ### Fixed
 * Shorter label in `InitSessionBuilder`.

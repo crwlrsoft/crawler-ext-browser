@@ -49,3 +49,18 @@ if (str_starts_with($route, '/init_session')) {
 
     return include(__DIR__ . '/_Server/InitSessionRedirect.php');
 }
+
+if (str_starts_with($route, '/infinite-scrolling')) {
+    if ($_GET['lowHeight'] === '1') {
+        echo <<<HTML
+            <!Doctype html>
+            <html lang="en">
+            <head></head>
+            <body>Hey</body>
+            </html>
+            HTML;
+        return;
+    }
+
+    return include(__DIR__ . '/_Server/InfiniteScrolling.php');
+}
