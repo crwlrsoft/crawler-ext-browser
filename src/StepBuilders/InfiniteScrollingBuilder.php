@@ -67,7 +67,7 @@ class InfiniteScrollingBuilder extends StepBuilder
 
     public function outputType(): StepOutputType
     {
-        return StepOutputType::Scalar;
+        return StepOutputType::AssociativeArrayOrObject;
     }
 
     public function isLoadingStep(): bool
