@@ -43,8 +43,8 @@
         "crwlr/crwl-extension-utils": "^2.4"
     },
     "require-dev": {
-        "pestphp/pest": "^2.19|^3.0",
-        "phpstan/phpstan": "^1.10",
+        "pestphp/pest": "^2.19|^3.0|^4.0",
+        "phpstan/phpstan": "^1.10|^2.0",
         "friendsofphp/php-cs-fixer": "^3.57"
     },
     "extra": {

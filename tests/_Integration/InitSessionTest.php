@@ -4,8 +4,8 @@ use Crwlr\Crawler\Steps\Loading\Http;
 use Crwlr\CrawlerExtBrowser\Steps\InitSession;
 
 it(
-    'initiates a session via a request performed by a headless browser, yields the input URL ' .
-    'and session cookies are used by a following non browser loading step',
+    'initiates a session via a request performed by a headless browser, yields the input URL '
+    . 'and session cookies are used by a following non browser loading step',
     function () {
         $crawler = helper_getFastCrawler();
 

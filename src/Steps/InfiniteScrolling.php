@@ -121,7 +121,8 @@ class InfiniteScrolling extends BrowserBaseStep
             try {
                 $response = $this->getResponseFromInputUri($uri);
 
-                if ($response && method_exists($response, 'isServedFromCache') && $response->isServedFromCache()) {
+                // @phpstan-ignore-next-line the method was introduced in crwlr/crawler 3.2.0.
+                if ($response && $response?->isServedFromCache()) {
                     yield $response;
 
                     break;
